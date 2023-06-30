@@ -1,3 +1,4 @@
+
 name: Deploy website
 on:
   push:
@@ -25,9 +26,24 @@ jobs:
         run: npm ci
       - name: Build website
         run: npm run build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist
+        #  path: | #MULTIPLE FILES
+        #    dist
+        #    package.json
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Get Build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-files
+      - name: Output contents
+        run: ls    
       - name: Deploy
         run: echo "Deploying..."
